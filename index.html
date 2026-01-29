@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rahma wa Maghfira</title>
+
+<style>
+body{
+font-family:Arial,sans-serif;
+background:#000;
+color:#fff;
+margin:0;
+text-align:center;
+direction:rtl;
+display:flex;
+justify-content:center;
+}
+
+.container{
+max-width:800px;
+padding:20px;
+width:100%;
+}
+
+.title-small{
+color:#ccc;
+margin-bottom:15px;
+}
+
+.deceased-photo{
+width:260px;
+height:260px;
+border-radius:50%;
+margin:15px auto;
+animation:scale 3s infinite;
+}
+
+@keyframes scale{
+0%,100%{transform:scale(1)}
+50%{transform:scale(1.08)}
+}
+
+#person-name{
+font-size:3em;
+color:#ffcccc;
+animation:color-change 3s infinite;
+font-weight:bold;
+}
+
+@keyframes color-change{
+0%,50%,100%{color:#ffcccc}
+25%,75%{color:#ccccff}
+}
+
+header h1{
+text-shadow:0 0 15px yellow;
+animation:glow 2s infinite alternate;
+}
+
+@keyframes glow{
+from{text-shadow:0 0 10px yellow}
+to{text-shadow:0 0 25px yellow}
+}
+
+.dedication{color:#aaa}
+
+.dua-section,.quran-section{
+background:rgba(0,0,0,.7);
+padding:15px;
+margin:15px 0;
+border-radius:10px;
+}
+
+audio{display:none;margin-top:10px}
+
+/* ===== Quran List ===== */
+.surah-list{
+max-height:300px;
+overflow:auto;
+margin-top:15px;
+}
+
+.surah-item{
+display:flex;
+justify-content:space-between;
+background:#111;
+padding:10px;
+margin-bottom:6px;
+border-radius:6px;
+cursor:pointer;
+}
+
+.surah-item:hover{background:#222}
+.surah-item.playing{background:#333}
+.surah-item.done{background:#0f2a1d;opacity:.7}
+.surah-item .check{display:none;color:#00ff99}
+.surah-item.done .check{display:inline}
+
+/* Player */
+.player-controls button{
+background:#222;
+color:#fff;
+border:1px solid #555;
+padding:8px 14px;
+margin:4px;
+border-radius:6px;
+cursor:pointer;
+}
+
+/* Progress */
+.progress-box{margin:15px 0}
+.progress-text{font-size:.9em;color:#ccc}
+.progress-bar{
+height:10px;
+background:#222;
+border-radius:6px;
+overflow:hidden;
+}
+.progress-fill{
+height:100%;
+width:0%;
+background:linear-gradient(to left,#00ff99,#008866);
+transition:.5s;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<h1 class="title-small">ختمة المصحف كاملة</h1>
+
+<img src="foto.jpeg" class="deceased-photo">
+
+<p class="dedication">اللهم إني أهدي ثواب هذه الختمة إلى</p>
+<span id="person-name">أحمد ياسر الغروري</span>
+
+<header>
+<h1>رحمة الله ومغفرة ونور على روحه</h1>
+<p>تم الزيارة في: <span id="time-display"></span></p>
+</header>
+
+<section class="dua-section">
+<p>اللهم اغفر له وارحمه واعف عنه وأكرم نزله ووسع مدخله.</p>
+</section>
+
+<section class="quran-section">
+<h2>قراءة قرآن على روحه</h2>
+
+<div class="progress-box">
+<div class="progress-text" id="progress-text"></div>
+<div class="progress-bar">
+<div class="progress-fill" id="progress-fill"></div>
+</div>
+</div>
+
+<p id="dynamic-dua" class="dedication"></p>
+
+<div class="surah-list" id="surah-list"></div>
+
+<audio id="quran-audio" controls></audio>
+
+<div class="player-controls">
+<button onclick="audio.play()">▶ تشغيل</button>
+<button onclick="audio.pause()">⏸ إيقاف</button>
+<button onclick="playNext()">⏭ التالي</button>
+</div>
+</section>
+
+<footer>
+<p>by saif hesham</p>
+</footer>
+
+</div>
+
+<script>
+document.getElementById("time-display").textContent =
+new Date().toLocaleString("ar-EG");
+
+const surahNames=[/* 114 سورة */"الفاتحة","البقرة","آل عمران","النساء","المائدة","الأنعام","الأعراف","الأنفال","التوبة","يونس","هود","يوسف","الرعد","إبراهيم","الحجر","النحل","الإسراء","الكهف","مريم","طه","الأنبياء","الحج","المؤمنون","النور","الفرقان","الشعراء","النمل","القصص","العنكبوت","الروم","لقمان","السجدة","الأحزاب","سبأ","فاطر","يس","الصافات","ص","الزمر","غافر","فصلت","الشورى","الزخرف","الدخان","الجاثية","الأحقاف","محمد","الفتح","الحجرات","ق","الذاريات","الطور","النجم","القمر","الرحمن","الواقعة","الحديد","المجادلة","الحشر","الممتحنة","الصف","الجمعة","المنافقون","التغابن","الطلاق","التحريم","الملك","القلم","الحاقة","المعارج","نوح","الجن","المزمل","المدثر","القيامة","الإنسان","المرسلات","النبأ","النازعات","عبس","التكوير","الإنفطار","المطففين","الإنشقاق","البروج","الطارق","الأعلى","الغاشية","الفجر","البلد","الشمس","الليل","الضحى","الشرح","التين","العلق","القدر","البينة","الزلزلة","العاديات","القارعة","التكاثر","العصر","الهمزة","الفيل","قريش","الماعون","الكوثر","الكافرون","النصر","المسد","الإخلاص","الفلق","الناس"];
+
+const audio=document.getElementById("quran-audio");
+const list=document.getElementById("surah-list");
+let completed=JSON.parse(localStorage.getItem("khatma"))||[];
+let currentIndex=null;
+
+surahNames.forEach((n,i)=>{
+const d=document.createElement("div");
+d.className="surah-item";
+d.dataset.index=i;
+if(completed.includes(i))d.classList.add("done");
+d.innerHTML=`<span>${i+1}. ${n}</span><span class="check">✓</span>`;
+d.onclick=()=>playSurah(i);
+list.appendChild(d);
+});
+
+function playSurah(i){
+currentIndex=i;
+document.querySelectorAll(".surah-item").forEach(e=>e.classList.remove("playing"));
+document.querySelector(`[data-index="${i}"]`).classList.add("playing");
+audio.src=`quran/${String(i+1).padStart(3,"0")}_uP_bY_mUSLEm.mp3`;
+audio.style.display="block";
+audio.play();
+}
+
+audio.addEventListener("ended",()=>{
+if(!completed.includes(currentIndex)){
+completed.push(currentIndex);
+localStorage.setItem("khatma",JSON.stringify(completed));
+}
+document.querySelector(`[data-index="${currentIndex}"]`).classList.add("done");
+updateProgress();updateDua();
+if(currentIndex<113)playSurah(currentIndex+1);
+});
+
+function playNext(){
+if(currentIndex<113)playSurah(currentIndex+1);
+}
+
+function updateProgress(){
+const p=(completed.length/114)*100;
+document.getElementById("progress-fill").style.width=p+"%";
+document.getElementById("progress-text").textContent=
+`تم الاستماع إلى ${completed.length} من 114 سورة`;
+}
+
+function updateDua(){
+const d=document.getElementById("dynamic-dua");
+d.textContent=
+completed.length<10?"اللهم اجعلها نورًا في قبره":
+completed.length<50?"اللهم آنسه في وحدته":
+completed.length<100?"اللهم ارفع درجته في الجنة":
+"اللهم تقبل هذه الختمة كاملة";
+}
+
+updateProgress();updateDua();
+</script>
+
+</body>
+</html>
