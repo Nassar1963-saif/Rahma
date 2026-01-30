@@ -199,7 +199,7 @@ function playSurah(i){
 currentIndex=i;
 document.querySelectorAll(".surah-item").forEach(e=>e.classList.remove("playing"));
 document.querySelector(`[data-index="${i}"]`).classList.add("playing");
-audio.src=`quran/${String(i+1).padStart(3,"0")}_uP_bY_mUSLEm.mp3`;
+audio.src = `https://archive.org/download/002-u-p-b-y-m-uslem_202601/${String(i+1).padStart(3,"0")}_uP_bY_mUSLEm.mp3`;
 audio.style.display="block";
 audio.play();
 }
